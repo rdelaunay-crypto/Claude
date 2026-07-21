@@ -6,6 +6,24 @@
  * données, stockage vidéo sur un serveur média).
  */
 
+// localStorage peut être indisponible (navigation privée, iframe sandboxée…) :
+// on bascule alors sur un stockage en mémoire (perdu au rechargement de la page).
+const _storage = (() => {
+  try {
+    const t = '__tnh_test__';
+    localStorage.setItem(t, '1');
+    localStorage.removeItem(t);
+    return localStorage;
+  } catch (e) {
+    const mem = {};
+    return {
+      getItem: k => (k in mem ? mem[k] : null),
+      setItem: (k, v) => { mem[k] = String(v); },
+      removeItem: k => { delete mem[k]; }
+    };
+  }
+})();
+
 const STORAGE_KEYS = {
   users: 'tnh_users',
   session: 'tnh_session',
@@ -17,7 +35,7 @@ const STORAGE_KEYS = {
 const Store = {
   _read(key, fallback) {
     try {
-      const raw = localStorage.getItem(key);
+      const raw = _storage.getItem(key);
       return raw ? JSON.parse(raw) : fallback;
     } catch (e) {
       console.warn('Lecture localStorage impossible pour', key, e);
@@ -25,20 +43,20 @@ const Store = {
     }
   },
   _write(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    _storage.setItem(key, JSON.stringify(value));
   },
 
   init() {
-    if (!localStorage.getItem(STORAGE_KEYS.users)) {
+    if (!_storage.getItem(STORAGE_KEYS.users)) {
       this._write(STORAGE_KEYS.users, DEMO_USERS);
     }
-    if (!localStorage.getItem(STORAGE_KEYS.tools)) {
+    if (!_storage.getItem(STORAGE_KEYS.tools)) {
       this._write(STORAGE_KEYS.tools, TOOLS);
     }
-    if (!localStorage.getItem(STORAGE_KEYS.tutorials)) {
+    if (!_storage.getItem(STORAGE_KEYS.tutorials)) {
       this._write(STORAGE_KEYS.tutorials, SEED_TUTORIALS);
     }
-    if (!localStorage.getItem(STORAGE_KEYS.progress)) {
+    if (!_storage.getItem(STORAGE_KEYS.progress)) {
       this._write(STORAGE_KEYS.progress, {});
     }
   },
@@ -55,10 +73,10 @@ const Store = {
   getProgress() { return this._read(STORAGE_KEYS.progress, {}); },
   saveProgress(p) { this._write(STORAGE_KEYS.progress, p); },
 
-  getSessionUserId() { return localStorage.getItem(STORAGE_KEYS.session); },
+  getSessionUserId() { return _storage.getItem(STORAGE_KEYS.session); },
   setSessionUserId(id) {
-    if (id) localStorage.setItem(STORAGE_KEYS.session, id);
-    else localStorage.removeItem(STORAGE_KEYS.session);
+    if (id) _storage.setItem(STORAGE_KEYS.session, id);
+    else _storage.removeItem(STORAGE_KEYS.session);
   },
 
   getCurrentUser() {

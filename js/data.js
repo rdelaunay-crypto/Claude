@@ -142,15 +142,11 @@ const DEMO_USERS = [
   { id: 'u5', name: 'Ahmed El Fassi', role: 'lecteur', department: 'Direction des Soins', initials: 'AF' }
 ];
 
-// Vidéos d'exemple (domaine public, hébergées par Google) utilisées uniquement
-// pour démontrer le lecteur vidéo. En production : URLs du serveur média interne.
-const SAMPLE_VIDEOS = [
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
-];
+// Les tutoriels de démonstration référencent la vidéo embarquée (js/demo-video.js)
+// via l'identifiant spécial 'demo', résolu par le lecteur. Cela permet au
+// prototype de fonctionner entièrement hors-ligne, sans serveur média.
+// En production : URLs du serveur média interne de l'hôpital.
+const SAMPLE_VIDEOS = ['demo', 'demo', 'demo', 'demo', 'demo'];
 
 function seedTutorials() {
   const picks = [

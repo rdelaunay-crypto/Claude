@@ -34,16 +34,18 @@ poste, mais n'est pas partagé entre utilisateurs ou appareils.
 
 ## Lancer le prototype
 
-Aucune installation n'est nécessaire :
+**Le plus simple : double-cliquer sur `tutos-numeriques.html`** — c'est la
+version « fichier unique » où tout est embarqué (styles, scripts, vidéo de
+démonstration). Elle fonctionne hors-ligne, sans serveur ni installation.
+Elle est régénérée à partir des sources par `./build-standalone.sh`.
+
+Version multi-fichiers (pour le développement) :
 
 ```bash
 # Depuis la racine du projet
 python3 -m http.server 8000
 # puis ouvrir http://localhost:8000
 ```
-
-(Ouvrir directement `index.html` dans un navigateur fonctionne aussi dans
-la plupart des cas.)
 
 À la connexion, choisissez un compte de démonstration :
 
@@ -62,8 +64,9 @@ la plupart des cas.)
   prévisualisables que pendant la session de navigation en cours (pas de
   serveur de stockage) — privilégier une URL vidéo pointant vers un
   serveur média pour une publication persistante.
-- Les vidéos de démonstration pré-chargées sont des fichiers d'exemple
-  publics, à remplacer par les tutoriels réels de l'établissement.
+- Les tutoriels pré-chargés utilisent une courte vidéo de démonstration
+  générée et embarquée dans le projet (`js/demo-video.js`), à remplacer
+  par les tutoriels réels de l'établissement.
 - Aucune donnée n'est partagée entre utilisateurs/postes (localStorage
   local au navigateur).
 
@@ -81,9 +84,12 @@ la plupart des cas.)
 ## Structure du code
 
 ```
-index.html          Page unique, structure de l'application
-css/styles.css       Feuille de style (aucune dépendance externe)
-js/data.js           Référentiel des 200 outils, comptes de démo, tutoriels d'exemple
-js/store.js          Couche de persistance (localStorage)
-js/app.js            Routage (hash) et rendu des vues
+tutos-numeriques.html   Version "fichier unique" prête à l'emploi (générée)
+build-standalone.sh     Régénère tutos-numeriques.html à partir des sources
+index.html              Page unique, structure de l'application
+css/styles.css          Feuille de style (aucune dépendance externe)
+js/data.js              Référentiel des 200 outils, comptes de démo, tutoriels d'exemple
+js/demo-video.js        Vidéo de démonstration embarquée (data URI)
+js/store.js             Couche de persistance (localStorage, repli mémoire)
+js/app.js               Routage (hash) et rendu des vues
 ```

@@ -56,6 +56,14 @@ const App = {
     return new Date(ts).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
   },
 
+  resolveVideoUrl(tuto) {
+    // 'demo' référence la vidéo de démonstration embarquée (js/demo-video.js)
+    if (tuto.videoUrl === 'demo') {
+      return typeof DEMO_VIDEO_DATA !== 'undefined' ? DEMO_VIDEO_DATA : '';
+    }
+    return tuto.videoUrl;
+  },
+
   tutorialsForTool(toolId) {
     return Store.getTutorials().filter(t => t.toolId === toolId).sort((a, b) => b.createdAt - a.createdAt);
   },
@@ -296,7 +304,7 @@ const App = {
       <a class="back-link" href="#/outil/${tool.id}">&larr; Retour à ${this.esc(tool.name)}</a>
       <div class="player-layout">
         <div>
-          <video id="player" controls preload="metadata" src="${this.esc(tuto.videoUrl)}"></video>
+          <video id="player" controls preload="metadata"></video>
           <div class="player-info">
             <h1>${this.esc(tuto.title)}</h1>
             <p class="muted">Outil : <a href="#/outil/${tool.id}">${this.esc(tool.name)}</a> · Par ${this.esc(this.userName(tuto.authorId))} · Publié le ${this.fmtDate(tuto.createdAt)}</p>
@@ -319,6 +327,7 @@ const App = {
     `);
 
     const video = document.getElementById('player');
+    video.src = this.resolveVideoUrl(tuto);
     if (progress.lastPositionSec) {
       video.addEventListener('loadedmetadata', () => { video.currentTime = progress.lastPositionSec; }, { once: true });
     }
